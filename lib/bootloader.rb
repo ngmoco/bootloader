@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'configurability/config'
+
 module Bootloader
   module_function
 
