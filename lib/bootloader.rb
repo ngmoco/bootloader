@@ -12,7 +12,7 @@ module Bootloader
       load_configs
       connect_to_mongodb
       load_dir('models')
-      load_dir('lib')
+      load_dir('lib', '**')
       @setup = false
     end
   end
