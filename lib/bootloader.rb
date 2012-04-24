@@ -6,11 +6,12 @@ module Bootloader
   module_function
 
   # @param opts [Hash]
+  # @opts opts :environment
   def setup(opts = {})
     unless @setup
       set_env(opts.fetch(:environment, ENV['RACK_ENV']))
       load_configs
-      connect_to_mongodb
+      connect_to_mongodb unless opts.fetch(:mongodb, true)
       load_dir('models')
       load_dir('lib')
       @setup = false
