@@ -11,7 +11,7 @@ module Bootloader
     unless @setup
       set_env(opts.fetch(:environment, ENV['RACK_ENV']))
       load_configs
-      connect_to_mongodb unless opts.fetch(:mongodb, true)
+      connect_to_mongodb if opts.fetch(:mongodb, true)
       load_dir('models')
       load_dir('lib')
       @setup = false
