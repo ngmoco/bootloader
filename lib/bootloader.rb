@@ -66,9 +66,14 @@ module Bootloader
   #
   # @param filename [Symbol|String] Filename without the '.yml' extension
   # @return
-  def load_config(filename)
+  def load_config(filename, opts = {})
+    auto = opts.fetch(:auto, true)
     YAML::ENGINE.yamler = 'syck'
-    Configurability::Config.load(File.join(root_path, 'config', "#{filename}.yml"))[RACK_ENV.to_sym]
+    if auto
+      Configurability::Config.load(File.join(root_path, 'config', "#{filename}.yml"))[RACK_ENV.to_sym]
+    else
+      Configurability::Config.load(filename)[RACK_ENV.to_sym]
+    end
   end
 
   def load_configs(opts = {})
