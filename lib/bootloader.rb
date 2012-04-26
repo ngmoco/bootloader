@@ -67,6 +67,7 @@ module Bootloader
   # @param filename [Symbol|String] Filename without the '.yml' extension
   # @return
   def load_config(filename)
+    YAML::ENGINE.yamler = 'syck'
     Configurability::Config.load(File.join(root_path, 'config', "#{filename}.yml"))[RACK_ENV.to_sym]
   end
 

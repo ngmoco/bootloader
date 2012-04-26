@@ -21,7 +21,6 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'bundler'
   s.add_dependency 'configurability'
-  s.add_dependency 'psych'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'yard'
