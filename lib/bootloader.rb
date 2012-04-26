@@ -72,7 +72,7 @@ module Bootloader
   end
 
   def load_configs(opts = {})
-    Dir.glob(File.join(root_path, 'config', '**', '*.yml')).each do |config|
+    Dir.glob(File.join(root_path, 'config', '*.yml')).each do |config|
       filename = File.basename(config, '.yml')
       next if filename == 'mongoid'
       module_name = "::#{filename.capitalize}"
