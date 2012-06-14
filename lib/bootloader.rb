@@ -89,7 +89,7 @@ module Bootloader
   end
 
   def development?
-    env == 'development'
+    %w(development test).include?(env)
   end
 
 end
