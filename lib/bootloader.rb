@@ -88,4 +88,8 @@ module Bootloader
     end
   end
 
+  def development?
+    env == 'development'
+  end
+
 end
