@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 require 'configurability/config'
+require 'syslog-logger'
 
 module Bootloader
   module_function
@@ -90,6 +91,13 @@ module Bootloader
 
   def development?
     %w(development test).include?(env)
+  end
+
+  def logger(name, level = 'debug')
+    Logger::Syslog.new(name).tap do |logger|
+      logger.formatter = Logger::SyslogFormatter.new
+      logger.level = eval("Logger::#{level.upcase}")
+    end
   end
 
 end
