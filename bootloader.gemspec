@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'bundler'
   s.add_dependency 'configurability'
+  s.add_dependency 'activesupport'
   s.add_dependency 'syslog-logger', '~> 1.6.8'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec'

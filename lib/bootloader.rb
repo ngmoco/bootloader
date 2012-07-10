@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 require 'configurability/config'
+require 'active_support'
 require 'syslog-logger'
 
 module Bootloader
@@ -76,16 +77,16 @@ module Bootloader
     Configurability::Config.load(path)
   end
 
+  # Set namespaced constants for the yml configs
+  #
+  # foo.yml #=> FooConfig
+  # foo_bar.yml #=> FooBarConfig
   def load_configs(opts = {})
     Dir.glob(File.join(root_path, 'config', '*.yml')).each do |config|
       filename = File.basename(config, '.yml')
       next if filename == 'mongoid'
-      module_name = "::#{filename.capitalize}"
-      Kernel.eval %Q{module #{module_name}; end}
-      mojule = Kernel.eval(module_name)
-      unless mojule.const_defined?(:Config, false)
-        mojule.const_set(:Config, Bootloader.load_config(filename))
-      end
+      module_name = "#{::ActiveSupport::Inflector.camelize(filename)}Config"
+      Object.const_set(module_name, Bootloader.load_config(filename))
     end
   end
 
