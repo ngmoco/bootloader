@@ -11,7 +11,7 @@ module Bootloader
   # @opts opts :environment
   def setup(opts = {})
     unless @setup
-      set_env(opts.fetch(:environment, ENV['RACK_ENV']))
+      set_env
       load_configs
       connect_to_mongodb if opts.fetch(:mongodb, true)
       load_dir('models')
@@ -20,13 +20,16 @@ module Bootloader
     end
   end
 
-  # @param environment [String]
-  def set_env(environment)
+  # If not already defined set the RACK_ENV top-level constant
+  # to $RACK_ENV, $RAILS_ENV or 'development' (in that order)
+  #
+  def set_env
     unless Object.const_defined?(:RACK_ENV)
-      ENV['RACK_ENV'] ||= environment || 'development'
-      Object.const_set(:RACK_ENV, ENV['RACK_ENV'])
-      puts "Running in #{RACK_ENV} mode"
+      env = [ENV['RACK_ENV'], ENV['RAILS_ENV'], 'development'].compact.first
+      Object.const_set(:RACK_ENV, env)
     end
+    puts "Running in #{RACK_ENV} mode"
+    RACK_ENV
   end
 
   def env
@@ -70,7 +73,7 @@ module Bootloader
   # @return
   def load_config(filename, opts = {})
     YAML::ENGINE.yamler = 'syck'
-    Configurability::Config.load(File.join(root_path, 'config', "#{filename}.yml"))[RACK_ENV.to_sym]
+    Configurability::Config.load(File.join(root_path, 'config', "#{filename}.yml"))[Bootloader.env.to_sym]
   end
 
   def load_yml(path)
