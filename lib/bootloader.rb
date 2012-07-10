@@ -86,7 +86,8 @@ module Bootloader
       filename = File.basename(config, '.yml')
       next if filename == 'mongoid'
       module_name = "#{::ActiveSupport::Inflector.camelize(filename)}Config"
-      Object.const_set(module_name, Bootloader.load_config(filename))
+      const = Object.const_set(module_name, Bootloader.load_config(filename))
+      puts "Loaded #{module_name} from config/#{filename}.yml"
     end
   end
 
