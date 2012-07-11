@@ -40,6 +40,14 @@ module Bootloader
     RACK_ENV
   end
 
+  def load_mongoid
+    mongoid_config_path = "#{root_path}/config/mongoid.yml"
+    if File.exists?(mongoid_config_path)
+      Mongoid.load!(mongoid_config_path)
+      puts "Loaded mongoid config"
+    end
+  end
+
   def root_path
     @root ||= File.dirname(Bundler.default_gemfile.to_path)
   end
