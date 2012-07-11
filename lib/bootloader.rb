@@ -12,13 +12,13 @@ module Bootloader
   # @param opts [Hash]
   # @opts opts :environment
   def setup(opts = {})
-    unless @setup
+    unless @@setup
       set_env
       load_configs
       connect_to_mongodb if opts.fetch(:mongodb, true)
       load_dir('models')
       load_dir('lib')
-      @setup = true
+      @@setup = true
     end
   end
 
