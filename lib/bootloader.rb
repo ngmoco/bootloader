@@ -18,7 +18,7 @@ module Bootloader
       connect_to_mongodb if opts.fetch(:mongodb, true)
       load_dir('models')
       load_dir('lib')
-      @setup = false
+      @setup = true
     end
   end
 
