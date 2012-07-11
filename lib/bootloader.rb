@@ -93,7 +93,7 @@ module Bootloader
       module_name = "#{::ActiveSupport::Inflector.camelize(filename)}Config"
       unless Object.const_defined?(module_name)
         config = Bootloader.load_config(filename)
-        unless config.keys.empty?
+        unless config.to_a.empty?
           Object.const_set(module_name, config)
           puts "Loaded #{module_name} from config/#{filename}.yml"
         end
