@@ -11,11 +11,15 @@ module Bootloader
 
   @@already_setup = false
 
+  # If not already defined set the RACK_ENV top-level constant
+  # to $RACK_ENV, $RAILS_ENV or 'development' (in that order)
+  #
   # @param opts [Hash]
-  # @opts opts :environment
+  # @opts opts :env
   def setup(opts = {})
     unless @@already_setup
-      set_env
+      env = [opts[:env], ENV['RACK_ENV'], ENV['RAILS_ENV'], 'development'].compact.first
+      set_env(env)
       load_configs
       connect_to_mongodb if opts.fetch(:mongodb, true)
       load_dir('models')
@@ -24,12 +28,8 @@ module Bootloader
     end
   end
 
-  # If not already defined set the RACK_ENV top-level constant
-  # to $RACK_ENV, $RAILS_ENV or 'development' (in that order)
-  #
-  def set_env
+  def set_env(env)
     unless Object.const_defined?(:RACK_ENV)
-      env = [ENV['RACK_ENV'], ENV['RAILS_ENV'], 'development'].compact.first
       Object.const_set(:RACK_ENV, env)
     end
     puts "Running in #{RACK_ENV} mode"
