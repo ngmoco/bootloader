@@ -21,7 +21,6 @@ module Bootloader
       env = [opts[:env], ENV['RACK_ENV'], ENV['RAILS_ENV'], 'development'].compact.first
       set_env(env)
       load_configs
-      connect_to_mongodb
       load_dir('models')
       load_dir('lib')
       @@already_setup = true
@@ -39,14 +38,6 @@ module Bootloader
 
   def env
     RACK_ENV
-  end
-
-  def connect_to_mongodb
-    mongoid_config_path = "#{root_path}/config/mongoid.yml"
-    if File.exists?(mongoid_config_path)
-      Mongoid.load!(mongoid_config_path)
-      puts "Loaded mongoid config"
-    end
   end
 
   def root_path
