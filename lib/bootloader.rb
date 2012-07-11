@@ -42,7 +42,7 @@ module Bootloader
   end
 
   def connect_to_mongodb
-    mongoid_config_path = "#{root_path}/config/mongoid"
+    mongoid_config_path = "#{root_path}/config/mongoid.yml"
     if File.exists?(mongoid_config_path)
       Mongoid.load!(mongoid_config_path)
       puts "Loaded mongoid config"
