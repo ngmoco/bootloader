@@ -7,6 +7,8 @@ require 'syslog-logger'
 module Bootloader
   module_function
 
+  EXCLUDED_CONFIGS = ['mongoid', 'newrelic']
+
   # @param opts [Hash]
   # @opts opts :environment
   def setup(opts = {})
@@ -87,11 +89,14 @@ module Bootloader
   def load_configs(opts = {})
     Dir.glob(File.join(root_path, 'config', '*.yml')).each do |config|
       filename = File.basename(config, '.yml')
-      next if filename == 'mongoid'
+      next if EXCLUDED_CONFIGS.include?(filename)
       module_name = "#{::ActiveSupport::Inflector.camelize(filename)}Config"
       unless Object.const_defined?(module_name)
-        Object.const_set(module_name, Bootloader.load_config(filename))
-        puts "Loaded #{module_name} from config/#{filename}.yml"
+        config = Bootloader.load_config(filename)
+        unless config.keys.empty?
+          Object.const_set(module_name, config)
+          puts "Loaded #{module_name} from config/#{filename}.yml"
+        end
       end
     end
   end
