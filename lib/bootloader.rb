@@ -29,6 +29,7 @@ module Bootloader
   end
 
   def set_env(env)
+    ENV['RACK_ENV'] = env
     unless Object.const_defined?(:RACK_ENV)
       Object.const_set(:RACK_ENV, env)
     end
