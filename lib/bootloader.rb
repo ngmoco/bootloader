@@ -9,16 +9,18 @@ module Bootloader
 
   EXCLUDED_CONFIGS = ['mongoid', 'newrelic']
 
+  @@already_setup = false
+
   # @param opts [Hash]
   # @opts opts :environment
   def setup(opts = {})
-    unless @@setup ||= false
+    unless @@already_setup
       set_env
       load_configs
       connect_to_mongodb if opts.fetch(:mongodb, true)
       load_dir('models')
       load_dir('lib')
-      @@setup = true
+      @@already_setup = true
     end
   end
 
