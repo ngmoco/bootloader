@@ -41,10 +41,9 @@ module Bootloader
   end
 
   def load_mongoid
-    ENV['RACK_ENV'] = env
     mongoid_config_path = "#{root_path}/config/mongoid.yml"
     if File.exists?(mongoid_config_path)
-      Mongoid.load!(mongoid_config_path)
+      Mongoid.load!(mongoid_config_path, env)
       puts "Loaded mongoid config"
     end
   end
