@@ -57,7 +57,6 @@ module Bootloader
       urls = redis_yml.delete(:urls) if redis_yml[:urls]
       urls = redis_yml[:hosts].keys  if redis_yml[:hosts]
       redis_yml[:hosts].each { |k,v| v[:id] = "Redis Client connected to #{v[:name]} against DB 0" unless v[:id] } if redis_yml[:hosts]
-      require 'redis/distributed'
       Redis::Distributed.new(urls, redis_yml)
     end
   end
