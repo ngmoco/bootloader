@@ -48,6 +48,20 @@ module Bootloader
     end
   end
 
+  def redis_client(redis_yml)
+    if (redis_yml[:host] || redis_yml[:path])
+      Redis.new(redis_yml)
+    elsif (redis_yml[:url])
+      Redis.connect(redis_yml)
+    elsif (redis_yml[:urls] || redis_yml[:hosts])
+      urls = redis_yml.delete(:urls) if redis_yml[:urls]
+      urls = redis_yml[:hosts].keys  if redis_yml[:hosts]
+      redis_yml[:hosts].each { |k,v| v[:id] = "Redis Client connected to #{v[:name]} against DB 0" unless v[:id] } if redis_yml[:hosts]
+      require 'redis/distributed'
+      Redis::Distributed.new(urls, redis_yml)
+    end
+  end
+
   def root_path
     @root ||= File.dirname(Bundler.default_gemfile.to_path)
   end
