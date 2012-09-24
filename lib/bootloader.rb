@@ -3,6 +3,7 @@
 require 'configurability/config'
 require 'active_support'
 require 'syslog-logger'
+require 'logger'
 
 module Bootloader
   module_function
@@ -112,9 +113,14 @@ module Bootloader
   end
 
   def logger(name, level = 'debug')
-    Logger::Syslog.new(name).tap do |logger|
-      logger.formatter = Logger::SyslogFormatter.new
-      logger.level = eval("Logger::#{level.upcase}")
+    if development?
+      STDOUT.sync = true
+      Logger.new(STDOUT)
+    else
+      Logger::Syslog.new(name).tap do |logger|
+        logger.formatter = Logger::SyslogFormatter.new
+        logger.level = eval("Logger::#{level.upcase}")
+      end
     end
   end
 
