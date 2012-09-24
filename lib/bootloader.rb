@@ -115,7 +115,11 @@ module Bootloader
   def logger(name, level = 'debug')
     if development?
       STDOUT.sync = true
-      Logger.new(STDOUT)
+      Logger.new(STDOUT).tap do |logger|
+        logger.formatter = proc do |level, _, _, message|
+          "[%s: %s #%d] %s" % [level, Time.now.strftime("%m%d %H:%M:%S"), $$, message]
+        end
+      end
     else
       Logger::Syslog.new(name).tap do |logger|
         logger.formatter = Logger::SyslogFormatter.new
