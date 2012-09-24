@@ -117,7 +117,7 @@ module Bootloader
       STDOUT.sync = true
       Logger.new(STDOUT).tap do |logger|
         logger.formatter = proc do |level, _, _, message|
-          "[%s: %s #%d] %s" % [level, Time.now.strftime("%m%d %H:%M:%S"), $$, message]
+          "[%s: %s #%d] %s\n" % [level, Time.now.strftime("%m%d %H:%M:%S"), $$, message]
         end
       end
     else
