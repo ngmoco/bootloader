@@ -19,11 +19,22 @@ module Bootloader
   # @opts opts :env
   def setup(opts = {})
     unless @@already_setup
+      STDERR.puts "deprecation warning: use setup_environment"
       env = [opts[:env], ENV['RACK_ENV'], ENV['RAILS_ENV'], 'development'].compact.first
       set_env(env)
       load_configs
       load_dir('models')
       load_dir('lib')
+      @@already_setup = true
+    end
+  end
+
+  # Identical to old #setup, except that it does not load any
+  # configs.  Do it yourself.
+  def setup_environment(opts={})
+    unless @@already_setup
+      env = [opts[:env], ENV['RACK_ENV'], ENV['RAILS_ENV'], 'development'].compact.first
+      set_env(env)
       @@already_setup = true
     end
   end
