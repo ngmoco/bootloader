@@ -92,7 +92,7 @@ module Bootloader
   # @param filename [Symbol|String] Filename without the '.yml' extension
   # @return
   def load_config(filename, opts = {})
-    YAML::ENGINE.yamler = 'syck'
+    YAML::ENGINE.yamler = 'psych' # See http://darwinweb.net/articles/convert-syck-to-psych-yaml-format for some background
     Configurability::Config.load(File.join(root_path, 'config', "#{filename}.yml"))[Bootloader.env.to_sym]
   end
 
