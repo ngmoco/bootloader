@@ -7,6 +7,20 @@ This gem provides a set of APIs that takes care of common tasks across your non-
 - Setting up a syslogger
 - etc.
 
+## Installation
+
+Add the following line to your _Gemfile_:
+
+```ruby
+gem 'bootloader', :github => "ngmoco/bootloader"
+```
+
+And then run:
+
+```shell
+$ bundle install
+```
+
 ## Example
 
 Say you have a project with the following structure:
