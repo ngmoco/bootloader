@@ -8,7 +8,7 @@ require 'logger'
 module Bootloader
   module_function
 
-  EXCLUDED_CONFIGS = ['mongoid', 'newrelic']
+  EXCLUDED_CONFIGS = %w'newrelic'
 
   @@already_setup = false
 
