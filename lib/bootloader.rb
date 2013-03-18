@@ -10,101 +10,52 @@ module Bootloader
 
   EXCLUDED_CONFIGS = %w'newrelic'
 
-  @@already_setup = false
-
-  # If not already defined set the RACK_ENV top-level constant
-  # to $RACK_ENV, $RAILS_ENV or 'development' (in that order)
+  # Returns the current environment.
   #
-  # @param opts [Hash]
-  # @opts opts :env
-  def setup(opts = {})
-    unless @@already_setup
-      STDERR.puts "deprecation warning: use setup_environment"
-      env = [opts[:env], ENV['RACK_ENV'], ENV['RAILS_ENV'], 'development'].compact.first
-      set_env(env)
-      load_configs
-      load_dir('models')
-      load_dir('lib')
-      @@already_setup = true
-    end
-  end
-
-  # Identical to old #setup, except that it does not load any
-  # configs.  Do it yourself.
-  def setup_environment(opts={})
-    unless @@already_setup
-      env = [opts[:env], ENV['RACK_ENV'], ENV['RAILS_ENV'], 'development'].compact.first
-      set_env(env)
-      @@already_setup = true
-    end
-  end
-
-  def set_env(env)
-    ENV['RACK_ENV'] = env
-    unless Object.const_defined?(:RACK_ENV)
-      Object.const_set(:RACK_ENV, env)
-    end
-    puts "Running in #{RACK_ENV} mode"
-    RACK_ENV
-  end
-
+  # Parses $RACK_ENV, $RAILS_ENV and $RUBY_ENV in that order.
+  # Defauts to 'development' if none is defined.
+  #
+  # @return [String]  Current environment.
   def env
-    RACK_ENV
+    @@env ||= [ENV['RACK_ENV'], ENV['RAILS_ENV'], ENV['RUBY_ENV'], 'development'].compact.first
   end
 
-  def load_mongoid
-    mongoid_config_path = "#{root_path}/config/mongoid.yml"
-    if File.exists?(mongoid_config_path)
-      Mongoid.load!(mongoid_config_path, env)
-      puts "Loaded mongoid config"
-    end
-  end
-
+  # Returns the project's root path.
+  #
+  # @return [String]  Project root path
   def root_path
-    @root ||= File.dirname(Bundler.default_gemfile.to_path)
+    @@root ||= File.dirname(Bundler.default_gemfile.to_path)
   end
 
-  def load_dir(*paths)
-    Dir.glob(File.join(root_path, *paths, '*.rb')).each { |f| require f }
-  end
-
-  # Load the component's boot.rb file.
-  # The component folder must be directly located under ROOT.
+  # Loads a YAML config for the current environment.
+  #
+  # Config files must:
+  #   * Be located under $ROOT/config
+  #   * Have the .yml extension
   #
   # @example
-  #   ROOT/foo/boot.rb
-  #   Bootloader.load(:foo)
-  #   Bootloader.load('foo')
+  #   Bootloader.load_config 'foo' # => Creates FooConfig for $ROOT/config/foo.yml
   #
-  # @param component [Symbol|String]
-  def load(component)
-    require File.join(root_path, component.to_s, 'boot.rb')
-  end
-
-  # Load a YML config file.
-  # Config files must be located under ROOT/config and have the '.yml' extension.
+  # @param  [String] filename  config name without the '.yml' extension
   #
-  # @example
-  #   ROOT/config/foo.yml
-  #   Bootloader.load_config(:foo), or
-  #   Bootloader.load_config('foo')
-  #
-  # @param filename [Symbol|String] Filename without the '.yml' extension
-  # @return
-  def load_config(filename, opts = {})
+  # @return [Configurability::Config::Struct]
+  def load_config(filename)
     YAML::ENGINE.yamler = 'psych' # See http://darwinweb.net/articles/convert-syck-to-psych-yaml-format for some background
     Configurability::Config.load(File.join(root_path, 'config', "#{filename}.yml"))[Bootloader.env.to_sym]
   end
 
-  def load_yml(path)
-    Configurability::Config.load(path)
-  end
-
-  # Set namespaced constants for the yml configs
+  # Loads all the YAML configs that are available for the current environment.
+  # Each config gets assigned its top-level constant. E.g. FooConfig for 'foo.yml'.
   #
-  # foo.yml #=> FooConfig
-  # foo_bar.yml #=> FooBarConfig
-  def load_configs(opts = {})
+  # @example
+  #
+  #   $ROOT/
+  #     config/
+  #       foo.yml
+  #       foo_bar.yml
+  #
+  #   Bootloader.load_configs # => Creates both 'FooConfig' and 'FooBarConfig'
+  def load_configs
     Dir.glob(File.join(root_path, 'config', '*.yml')).each do |config|
       filename = File.basename(config, '.yml')
       next if EXCLUDED_CONFIGS.include?(filename)
@@ -117,6 +68,34 @@ module Bootloader
         end
       end
     end
+  end
+
+  # Load boot.rb files.
+  #
+  # @example
+  #  $ROOT/
+  #    foo/
+  #      boot.rb
+  #      foo.rb
+  #      bar.rb
+  #
+  #   Bootloader.load 'foo' # => Loads $PROJECT/foo/boot.rb
+  #
+  # @param [String] dir
+  def load(dir)
+    require File.join(root_path, dir, 'boot.rb')
+  end
+
+  # Loads a YAML config.
+  #
+  # @return [Configurability::Config::Struct]
+  def load_yml(path)
+    Configurability::Config.load(path)
+  end
+
+  # Load all the files under the given paths.
+  def load_dir(*paths)
+    Dir.glob(File.join(root_path, *paths, '*.rb')).each { |f| require f }
   end
 
   def development?
@@ -136,6 +115,14 @@ module Bootloader
         logger.formatter = Logger::SyslogFormatter.new
         logger.level = eval("Logger::#{level.upcase}")
       end
+    end
+  end
+
+  def load_mongoid
+    mongoid_config_path = "#{root_path}/config/mongoid.yml"
+    if File.exists?(mongoid_config_path)
+      Mongoid.load!(mongoid_config_path, env)
+      puts "Loaded mongoid config"
     end
   end
 
