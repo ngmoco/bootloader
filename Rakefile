@@ -1,8 +1,13 @@
 # encoding: utf-8
 
-desc 'Open an irb session preloaded with the gem library'
+desc 'Open an IRB console preloaded with the bootloader gem'
 task :console do
-    sh 'irb -rubygems -I . -r boot.rb'
+  require 'bundler/setup'
+  Bundler.require
+  require 'irb'
+  require 'irb/completion'
+  ARGV.clear
+  IRB.start
 end
 
 task :c => :console
