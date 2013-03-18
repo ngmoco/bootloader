@@ -2,13 +2,14 @@
 # encoding: utf-8
 
 require 'base64'
+require File.expand_path '../lib/version', __FILE__
 
 Gem::Specification.new do |s|
   s.name = 'bootloader'
-  s.version = '0.1'
+  s.version = Bootloader::VERSION
   s.authors = ['Christian Hoareau']
   s.email = ["Y2hvYXJlYXVAbmdtb2NvLmNvbQ==\n"].map { |i| Base64.decode64(i) }
-  s.homepage = 'http://github.ngmoco.com/choareau/bootloader'
+  s.homepage = 'https://github.com/ngmoco/bootloader'
   s.summary = 'A bootloader API for your awesome, multi-component Ruby project'
   s.description = s.summary
 
