@@ -1,0 +1,6 @@
+development:
+  database:
+    name: my_project_dev
+    hosts:
+    - db101
+    - db102
