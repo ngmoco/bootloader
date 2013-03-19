@@ -4,6 +4,7 @@ require 'configurability/config'
 require 'active_support'
 require 'syslog-logger'
 require 'logger'
+require 'version'
 
 module Bootloader
   module_function
