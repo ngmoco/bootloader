@@ -102,12 +102,12 @@ module Bootloader
     %w(development test).include?(env)
   end
 
-  def logger(name, level = 'debug')
-    if development?
+  def logger(name, level = 'debug', output = :syslog)
+    if development? || output != :syslog
       STDOUT.sync = true
       Logger.new(STDOUT).tap do |logger|
-        logger.formatter = proc do |level, _, _, message|
-          "[#{level}] #{message}\n"
+        logger.formatter = proc do |level, time, _, message|
+          "[#{time.strftime("%Y-%m-%d %H:%M:%S")}] [#{level.rjust(5)}] #{message}\n"
         end
       end
     else
