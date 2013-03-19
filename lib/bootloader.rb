@@ -127,3 +127,5 @@ module Bootloader
   end
 
 end
+
+puts "Running in #{Bootloader.env} mode (Bootloader #{Bootloader::VERSION})"
