@@ -127,6 +127,10 @@ module Bootloader
     end
   end
 
+  def puts(message)
+    $stdout.puts "[Bootloader] #{message}"
+  end
+
 end
 
-puts "Running in #{Bootloader.env} mode (Bootloader #{Bootloader::VERSION})"
+Bootloader.puts "Running in #{Bootloader.env} mode"
