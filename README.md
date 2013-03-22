@@ -1,10 +1,10 @@
 # bootloader
 
-This gem provides a set of APIs that takes care of common tasks across your non-Railsy Ruby projects:
+bootloader takes care of many of the common tasks across your Ruby applications:
 
-- Loading YAML configuration
-- Loading multiple source files at once
-- Setting up a syslogger
+- Loading YAML configuration.
+- Loading multiple source files at once.
+- Setting up a syslogger.
 - etc.
 
 ## Installation
@@ -12,13 +12,13 @@ This gem provides a set of APIs that takes care of common tasks across your non-
 Add the following line to your _Gemfile_:
 
 ```ruby
-gem 'bootloader', :github => "ngmoco/bootloader"
+gem 'bootloader'
 ```
 
 And then run:
 
 ```shell
-$ bundle install
+bundle install
 ```
 
 ## Example
@@ -27,6 +27,7 @@ Say you have a project with the following structure:
 
 ```shell
 my_project/
+  Gemfile
   config/
     my_project.yml
   lib/
@@ -64,5 +65,9 @@ Bootloader.load_dir 'lib' # Loads all the files under lib
 ### Setting up a Syslogger
 
 ```ruby
-Bootloader.logger 'my_project' # => #<Logger>
+Bootloader.syslogger 'my_project' # => #<Logger>
 ```
+
+## License
+
+bootloader is released under the [MIT License](http://opensource.org/licenses/MIT).

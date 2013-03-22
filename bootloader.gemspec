@@ -1,17 +1,18 @@
 #! /usr/bin/env gem build
 # encoding: utf-8
 
-require 'base64'
 require File.expand_path '../lib/version', __FILE__
 
 Gem::Specification.new do |s|
-  s.name = 'bootloader'
-  s.version = Bootloader::VERSION
-  s.authors = ['Christian Hoareau']
-  s.email = ["Y2hvYXJlYXVAbmdtb2NvLmNvbQ==\n"].map { |i| Base64.decode64(i) }
-  s.homepage = 'https://github.com/ngmoco/bootloader'
-  s.summary = 'A bootloader API for your awesome, multi-component Ruby project'
-  s.description = s.summary
+  s.name        = 'bootloader'
+  s.version     = Bootloader::VERSION
+  s.summary     = 'Bootload your Ruby application with ease.'
+  s.description = 'bootloader takes care of many of the common tasks across your Ruby applications.'
+
+  s.licence  = 'MIT'
+
+  s.authors  = 'Christian Hoareau'
+  s.email    = 'christian.hoareau@dena.com'
 
   ignores = File.readlines('.gitignore').grep(/\S+/).map { |l| l.chomp }
   dotfiles = ['.gitignore', '.rspec']
@@ -24,8 +25,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'configurability'
   s.add_dependency 'activesupport'
   s.add_dependency 'syslog-logger', '~> 1.6.8'
+
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec'
-  s.add_development_dependency 'yard'
-
 end
