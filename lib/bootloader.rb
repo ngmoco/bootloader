@@ -102,19 +102,32 @@ module Bootloader
     %w(development test).include?(env)
   end
 
-  def logger(name, level = 'debug', output = :syslog)
-    if development? || output != :syslog
-      STDOUT.sync = true
-      Logger.new(STDOUT).tap do |logger|
-        logger.formatter = proc do |level, time, _, message|
-          "[#{time.strftime("%Y-%m-%d %H:%M:%S")}] [#{level.rjust(5)}] #{message}\n"
-        end
-      end
-    else
-      Logger::Syslog.new(name).tap do |logger|
-        logger.formatter = Logger::SyslogFormatter.new
-        logger.level = eval("Logger::#{level.upcase}")
-      end
+  # Create a syslog logger instance
+  #
+  # @param name Syslog name
+  # @param level Log level
+  # @return Logger instance
+  def syslogger(name, level = 'info')
+    Logger::Syslog.new(name).tap do |logger|
+      logger.formatter = Logger::SyslogFormatter.new
+      logger.level = eval("Logger::#{level.upcase}")
+    end
+  end
+
+  # Create a logger instance
+  #
+  # @param out Filename or IO object
+  # @param level Log level
+  # @param block Format block
+  # @return Logger instance
+  def logger(out = $stdout, level = 'info', &block)
+    block ||= proc do |level, time, _, message|
+      "[#{time.strftime("%Y-%m-%d %H:%M:%S")}] [#{level.rjust(5)}] #{message}\n"
+    end
+    out.sync = true if out.respond_to?(:sync) # IO object
+    Logger.new(out).tap do |logger|
+      logger.formatter = block
+      logger.level = eval("Logger::#{level.upcase}")
     end
   end
 
