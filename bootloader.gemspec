@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.summary     = 'Bootload your Ruby application with ease.'
   s.description = 'bootloader takes care of many of the common tasks across your Ruby applications.'
 
-  s.licence  = 'MIT'
+  s.license  = 'MIT'
 
   s.authors  = 'Christian Hoareau'
   s.email    = 'christian.hoareau@dena.com'
