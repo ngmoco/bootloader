@@ -117,16 +117,18 @@ module Bootloader
 
   # Create a logger instance
   #
-  # @param out Filename or IO object
+  # @param out This is a filename (String) or IO object (typically STDOUT, STDERR, or an open file).
   # @param level Log level
+  # @param shift_age Number of old log files to keep, or frequency of rotation (daily, weekly or monthly).
+  # @param shift_size Maximum logfile size (only applies when shift_age is a number).
   # @param block Format block
   # @return Logger instance
-  def logger(out = $stdout, level = 'info', &block)
+  def logger(out = $stdout, level = 'info', shift_age = 0, shift_size = 1048676, &block)
     block ||= proc do |level, time, _, message|
       "[#{time.strftime("%Y-%m-%d %H:%M:%S")}] [#{level.rjust(5)}] #{message}\n"
     end
     out.sync = true if out.respond_to?(:sync) # IO object
-    Logger.new(out).tap do |logger|
+    Logger.new(out, shift_age, shift_size).tap do |logger|
       logger.formatter = block
       logger.level = eval("Logger::#{level.upcase}")
     end
